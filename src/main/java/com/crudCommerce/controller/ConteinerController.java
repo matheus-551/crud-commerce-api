@@ -128,8 +128,12 @@ public class ConteinerController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity deleteConteiner(@PathVariable("id") Integer id) {
-		this.conteinerService.deleteConteiner(id);
-		return new ResponseEntity(HttpStatus.NO_CONTENT);
+	public ResponseEntity<?> deleteConteiner(@PathVariable("id") Integer id) {
+		try {			
+			this.conteinerService.deleteConteiner(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}catch (RegraNegocioException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 }

@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service;
 import com.crudCommerce.exception.RegraNegocioException;
 import com.crudCommerce.model.Conteiner;
 import com.crudCommerce.repository.ConteinerRepository;
+import com.crudCommerce.repository.MovimentacaoRepository;
 
 @Service
 public class ConteinerService {
 	
 	@Autowired
 	private ConteinerRepository repository;
+	
+	@Autowired
+	private MovimentacaoRepository movimentacaoRepository;
 	
 	public List<Conteiner> listAllConteineres() {
 		return this.repository.findAll();
@@ -48,6 +52,12 @@ public class ConteinerService {
 	}
 	
 	public void deleteConteiner(Integer id) {
+		Optional<Conteiner> conteiner = findConteinerById(id);
+		
+		if(this.movimentacaoRepository.existsByConteiner(conteiner.get())) {
+			throw new RegraNegocioException("Não é possivél deletar este contêiner pois existe uma movimentação cadastrada com este contêiner");
+		}
+		
 		this.repository.deleteById(id);
 	}
 	

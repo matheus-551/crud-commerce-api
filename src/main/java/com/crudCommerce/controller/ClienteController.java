@@ -76,8 +76,12 @@ public class ClienteController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity deleteCliente(@PathVariable("id") Integer id) {
-		this.clienteService.deleteCliente(id);
-		return new ResponseEntity(HttpStatus.NO_CONTENT);
+	public ResponseEntity<?> deleteCliente(@PathVariable("id") Integer id) {
+		try {			
+			this.clienteService.deleteCliente(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}catch (RegraNegocioException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 }
